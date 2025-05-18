@@ -88,6 +88,7 @@ def admin_panel(message):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
         markup.add('Maktab ➕', 'Xabar yuborish 📢', 'Ball ➕')
         markup.add("Maktab 🧾")
+        markup.add("Statistika 📊")
         bot.send_message(message.chat.id, 'Admin panel:', reply_markup=markup)
 
 # Xabar yuborish funksiyasi
@@ -360,6 +361,19 @@ def show_registered_user(call):
         bot.send_message(call.message.chat.id, f"📋 {school} maktabidan ro'yxatdan o'tgan foydalanuvchi:\n👉 <a href='tg://user?id={user_id}'>Foydalanuvchi profili</a>", parse_mode='HTML')
     else:
         bot.send_message(call.message.chat.id, f"❌ {school} maktabidan hech kim ro'yxatdan o'tmagan.")
+
+
+@bot.message_handler(func=lambda message: message.text == 'Statistika 📊' and message.chat.id == ADMIN_ID)
+def show_statistics(message):
+    response = "📊 <b>Ro'yxatdan o'tganlar statistikasi</b>\n\n"
+    total = 0
+    for region in regions:
+        cursor.execute('SELECT COUNT(*) FROM schools WHERE region=? AND registered=1', (region,))
+        count = cursor.fetchone()[0]
+        total += count
+        response += f"🗺 <b>{region}</b>: {count} ta\n"
+    response += f"\n<b>JAMI:</b> {total} ta foydalanuvchi"
+    bot.send_message(message.chat.id, response, parse_mode='HTML')
 
 
 bot.infinity_polling()
