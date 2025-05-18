@@ -47,7 +47,7 @@ def select_region(call):
 
     markup = InlineKeyboardMarkup()
     for school, registered in schools:
-        text = f"{school} ({'✅ band' if registered else '🟢 bo\'sh'})"
+        text = f"{school} ({'✅ band' if registered else '🟢 bo‘sh'})"
         markup.add(InlineKeyboardButton(text, callback_data=f'sch_{region}_{school}'))
 
     bot.edit_message_text(f'{region}dagi maktabni tanlang:', call.message.chat.id, call.message.message_id,
