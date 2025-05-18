@@ -2,7 +2,7 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 import sqlite3
 
-TOKEN = '7318741358:AAFj_DyN2xPwCF3UWGq0J_VZKb8dq8jkohs'
+TOKEN = '7784161176:AAEVD8HgQbvaA3g6kmeQsFYS9SLVXRaQXI0'
 ADMIN_ID = 7126212094
 
 bot = telebot.TeleBot(TOKEN)
