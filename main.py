@@ -56,12 +56,22 @@ def select_region(call):
 @bot.callback_query_handler(func=lambda call: call.data.startswith('sch_'))
 def select_school(call):
     user_id = call.from_user.id
+    _, region, school = call.data.split('_', 2)
+
+    # 1) Foydalanuvchi allaqachon boshqa maktabga ro'yxatdan o'tganmi?
     cursor.execute('SELECT * FROM schools WHERE user_id=?', (user_id,))
     if cursor.fetchone():
-        bot.answer_callback_query(call.id, "Siz allaqachon ro'yxatdan o'tgansiz!", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ Siz allaqachon boshqa maktabga ro'yxatdan o'tgansiz!", show_alert=True)
         return
 
-    _, region, school = call.data.split('_', 2)
+    # 2) Ushbu maktab bandmi?
+    cursor.execute('SELECT registered FROM schools WHERE region=? AND school=?', (region, school))
+    row = cursor.fetchone()
+    if row and row[0] == 1:
+        bot.answer_callback_query(call.id, "❌ Bu maktabga allaqachon boshqa foydalanuvchi ro'yxatdan o'tgan!", show_alert=True)
+        return
+
+    # 3) Rasmni so‘rash
     msg = bot.send_message(call.message.chat.id, f"{school} oldida tushgan rasmingizni yuboring:")
     bot.register_next_step_handler(msg, lambda m: receive_photo(m, region, school))
 
